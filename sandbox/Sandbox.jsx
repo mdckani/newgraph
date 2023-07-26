@@ -160,7 +160,7 @@ export default class Sandbox extends React.Component {
       this.state.data.nodes.push({ id: newNode });
 
       while (this.state.data.nodes[i] && this.state.data.nodes[i].id && nLinks) {
-        this.state.data.links.push({
+        this.state.data.edges.push({
           source: newNode,
           target: this.state.data.nodes[i].id,
         });
@@ -176,7 +176,7 @@ export default class Sandbox extends React.Component {
       // 1st node
       const data = {
         nodes: [{ id: "Node 1" }],
-        links: [],
+        edges: [],
       };
 
       this.setState({ data });
@@ -191,8 +191,8 @@ export default class Sandbox extends React.Component {
       const id = this.state.data.nodes[0].id;
 
       this.state.data.nodes.splice(0, 1);
-      const links = this.state.data.links.filter(l => l.source !== id && l.target !== id);
-      const data = { nodes: this.state.data.nodes, links };
+      const edges = this.state.data.edges.filter(l => l.source !== id && l.target !== id);
+      const data = { nodes: this.state.data.nodes, edges };
 
       this.setState({ data });
     } else {
@@ -257,7 +257,7 @@ export default class Sandbox extends React.Component {
   };
 
   /**
-   * Before removing elements (nodes, links)
+   * Before removing elements (nodes, edges)
    * from the graph data, this function is executed.
    * https://github.com/oxyno-zeta/react-editable-json-tree#beforeremoveaction
    */
@@ -274,7 +274,7 @@ export default class Sandbox extends React.Component {
   /**
    * Update graph data each time an update is triggered
    * by JsonTree
-   * @param {Object} data update graph data (nodes and links)
+   * @param {Object} data update graph data (nodes and edges)
    */
   onGraphDataUpdate = data => {
     const removedNodeIndex = data.nodes.findIndex(n => !n);
@@ -287,11 +287,11 @@ export default class Sandbox extends React.Component {
 
     const nodes = data.nodes.filter(Boolean);
     const isValidLink = link => link && link.source !== removedNodeId && link.target !== removedNodeId;
-    const links = data.links.filter(isValidLink);
+    const edges = data.edges.filter(isValidLink);
 
     this.setState({
       data: {
-        links,
+        edges,
         nodes,
       },
     });
@@ -351,7 +351,7 @@ export default class Sandbox extends React.Component {
         </button>
         <span className="container__graph-info">
           {/* eslint-disable-next-line max-len */}
-          <b>Nodes: </b> {this.state.data.nodes.length} |<b>Links: </b> {this.state.data.links.length} |<b>Zoom: </b>{" "}
+          <b>Nodes: </b> {this.state.data.nodes.length} |<b>Links: </b> {this.state.data.edges.length} |<b>Zoom: </b>{" "}
           {this.state.currentZoom ? this.state.currentZoom.toFixed(3) : "-"}
         </span>
         {!deactivateCodeSandboxLink(this.state.config) && (
@@ -394,7 +394,7 @@ export default class Sandbox extends React.Component {
     // to true in the constructor we will provide nodes with initial positions
     const data = {
       nodes: this.state.data.nodes,
-      links: this.state.data.links,
+      edges: this.state.data.edges,
       focusedNodeId: this.state.data.focusedNodeId,
     };
 

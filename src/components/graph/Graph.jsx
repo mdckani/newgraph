@@ -37,7 +37,7 @@ import { merge, debounce, throwErr } from "../../utils";
  *       {id: 'Sally'},
  *       {id: 'Alice'}
  *     ],
- *     links: [
+ *     edges: [
  *         {source: 'Harry', target: 'Sally'},
  *         {source: 'Harry', target: 'Alice'},
  *     ]
@@ -275,13 +275,13 @@ export default class Graph extends React.Component {
   };
 
   /**
-   * Sets nodes and links highlighted value.
+   * Sets nodes and edges highlighted value.
    * @param  {string} id - the id of the node to highlight.
    * @param  {boolean} [value=false] - the highlight value to be set (true or false).
    * @returns {undefined}
    */
   _setNodeHighlightedValue = (id, value = false) =>
-    this._tick(updateNodeHighlightedValue(this.state.nodes, this.state.links, this.state.config, id, value));
+    this._tick(updateNodeHighlightedValue(this.state.nodes, this.state.edges, this.state.config, id, value));
 
   /**
    * The tick function simply calls React set state in order to update component and render nodes
@@ -373,22 +373,22 @@ export default class Graph extends React.Component {
       const ttl = this.props.onDoubleClickNode ? CONST.TTL_DOUBLE_CLICK_IN_MS : 0;
       this.nodeClickTimer = setTimeout(() => {
         if (this.state.config.collapsible) {
-          const leafConnections = getTargetLeafConnections(clickedNodeId, this.state.links, this.state.config);
-          const links = toggleLinksMatrixConnections(this.state.links, leafConnections, this.state.config);
-          const d3Links = toggleLinksConnections(this.state.d3Links, links);
+          const leafConnections = getTargetLeafConnections(clickedNodeId, this.state.edges, this.state.config);
+          const edges = toggleLinksMatrixConnections(this.state.edges, leafConnections, this.state.config);
+          const d3Links = toggleLinksConnections(this.state.d3Links, edges);
           const firstLeaf = leafConnections?.["0"];
 
           let isExpanding = false;
 
           if (firstLeaf) {
-            const visibility = links[firstLeaf.source][firstLeaf.target];
+            const visibility = edges[firstLeaf.source][firstLeaf.target];
 
             isExpanding = visibility === 1;
           }
 
           this._tick(
             {
-              links,
+              edges,
               d3Links,
             },
             () => {
@@ -657,7 +657,7 @@ export default class Graph extends React.Component {
   }
 
   render() {
-    const { nodes, links, defs } = renderGraph(
+    const { nodes, edges, defs } = renderGraph(
       this.state.nodes,
       {
         onClickNode: this.onClickNode,
@@ -667,7 +667,7 @@ export default class Graph extends React.Component {
         onMouseOut: this.onMouseOutNode,
       },
       this.state.d3Links,
-      this.state.links,
+      this.state.edges,
       {
         onClickLink: this.props.onClickLink,
         onRightClickLink: this.props.onRightClickLink,
@@ -692,7 +692,7 @@ export default class Graph extends React.Component {
         <svg name={`svg-container-${this.state.id}`} style={svgStyle} onClick={this.onClickGraph}>
           {defs}
           <g id={`${this.state.id}-${CONST.GRAPH_CONTAINER_ID}`} {...containerProps}>
-            {links}
+            {edges}
             {nodes}
           </g>
         </svg>
