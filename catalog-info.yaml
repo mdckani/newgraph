@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: newgraph
+  name: newgraph-test
   annotations:
     github.com/project-slug: mdckani/newgraph
 spec:
